@@ -3,6 +3,8 @@
 // hairline gold grid, stacking developer panels. Hero: 3D gold wireframe skyline rising
 // over a darkened photograph, with drifting gold dust.
 
+// Cache-busting stamp: a new value on every build so browsers fetch the latest CSS/JS despite long asset caching.
+const ASSET_V = Date.now().toString(36);
 const ARROW = `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>`;
 const ARROW_R = `<svg class="ico flip-rtl" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>`;
 const STAR = (cls = '') => `<svg class="star ${cls}" viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1"><rect x="20" y="20" width="60" height="60"/><rect x="20" y="20" width="60" height="60" transform="rotate(45 50 50)"/><circle cx="50" cy="50" r="18"/></g></svg>`;
@@ -37,10 +39,10 @@ ${seoHead(site, page)}
 <meta name="ga4-id" content="${esc(site.ga4Id || '')}">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:wght@300;400;500&display=swap">
-<link rel="stylesheet" href="/assets/theme/style.css">
+<link rel="stylesheet" href="/assets/theme/style.css?v=${ASSET_V}">
 ${page.preload || ''}
-<script src="/assets/theme/analytics.js"></script>
-<script type="module" src="/assets/theme/main.js"></script>
+<script src="/assets/theme/analytics.js?v=${ASSET_V}"></script>
+<script type="module" src="/assets/theme/main.js?v=${ASSET_V}"></script>
 </head>
 <body data-page="${page.type || 'page'}" ${page.developer ? `data-developer="${esc(page.developer.slug)}" data-developer-name="${esc(page.developer.name)}"` : ''}>
 <a class="skip" href="#main">Skip to content</a>
