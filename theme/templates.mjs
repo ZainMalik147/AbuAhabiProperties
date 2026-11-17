@@ -15,15 +15,16 @@ export const LOGO = `<svg class="brand-mark" viewBox="0 0 56 56" aria-hidden="tr
   <g fill="currentColor"><rect class="lg-t1" x="21" y="24" width="3" height="14"/><rect class="lg-t2" x="26.5" y="16" width="3" height="22"/><rect class="lg-t3" x="32" y="21" width="3" height="17"/></g>
   <rect x="17" y="38.5" width="22" height="1.2" fill="currentColor"/>
 </svg>`;
-const brand = (site) => `<a class="brand" href="/" aria-label="${site.name} — home">${LOGO}<span class="brand-text"><span class="brand-name">Abu Dhabi</span><span class="brand-sub">Properties · Developer Index</span></span></a>`;
+const brand = (site) => `<a class="brand" href="/" aria-label="${site.name}, home">${LOGO}<span class="brand-text"><span class="brand-name">Abu Dhabi</span><span class="brand-sub">Properties · Developer Index</span></span></a>`;
 
 function devImage(ctx, dev, i, which = 0) {
   const keys = [].concat(dev.images || dev.image || []);
   const k = keys[which];
   return (k && ctx.images.find(im => im.file === k)) || ctx.images[(i * 3 + 1 + which) % ctx.images.length];
 }
+const devLink = (ctx, dev, placement, inner, cls = 'dev-link') => `<a class="${cls}" href="${ctx.esc(ctx.outboundUrl(ctx.site, dev.website))}" ${ctx.outAttrs(ctx.site, dev, placement)}>${inner}<span class="sr-only">(${ctx.esc(dev.name)} official website, opens in a new tab)</span></a>`;
 const logoPlate = (ctx, dev, cls = '') => dev.logo?.file
-  ? `<figure class="logo-plate ${dev.logo.background === 'dark' ? 'is-dark' : 'is-light'} ${cls}"><img src="/${dev.logo.file}" alt="${ctx.esc(dev.name)} logo" loading="lazy"><figcaption class="sr-only">Official logo of ${ctx.esc(dev.name)}, shown for identification only.</figcaption></figure>`
+  ? `<figure class="logo-plate ${dev.logo.background === 'dark' ? 'is-dark' : 'is-light'} ${cls}">${devLink(ctx, dev, 'logo', `<img src="/${dev.logo.file}" alt="${ctx.esc(dev.name)} logo" loading="lazy">`, 'logo-link')}<figcaption class="sr-only">Official logo of ${ctx.esc(dev.name)}, shown for identification only.</figcaption></figure>`
   : `<div class="logo-plate is-text ${cls}">${ctx.esc(dev.name)}</div>`;
 
 function layout(ctx, page, body) {
@@ -71,11 +72,11 @@ ${body}
       <nav aria-label="Guide"><p class="f-label">The guide</p><a href="/about/">About</a><a href="/editorial-policy/">Editorial policy</a><a href="/contact/">Contact</a><a href="/credits/">Image credits</a></nav>
       <nav aria-label="Legal"><p class="f-label">Legal</p><a href="/disclaimer/">Disclaimer</a><a href="/privacy-policy/">Privacy policy</a><a href="#" data-open-consent>Cookie settings</a><button class="motion-toggle" type="button" aria-pressed="false">Pause motion</button></nav>
     </div>
-    <div class="footer-legal"><p>${esc(site.name)} is an independent editorial directory. It is not a real estate broker or agency, does not sell property, and is not affiliated with, sponsored or endorsed by any company featured. Logos and trademarks belong to their owners and are shown for identification only.</p><p>© ${new Date().getFullYear()} ${esc(site.name)}</p></div>
+    <div class="footer-legal"><p>${esc(site.name)} is an independent editorial directory. It is not a real estate broker or agency, does not sell property, and is not affiliated with any company featured. Logos and trademarks belong to their owners and are shown for identification only.</p><p>© ${new Date().getFullYear()} ${esc(site.name)}</p></div>
   </div>
 </footer>
 <div class="consent" id="consent" role="dialog" aria-live="polite" aria-label="Cookie preferences" hidden>
-  <p><strong>Privacy</strong> — We'd like to use analytics cookies to understand how this guide is used. They stay off unless you accept. <a href="/privacy-policy/">Privacy policy</a></p>
+  <p><strong>Privacy.</strong> We'd like to use analytics cookies to understand how this guide is used. They stay off unless you accept. <a href="/privacy-policy/">Privacy policy</a></p>
   <div class="consent-btns"><button class="btn btn-line" data-consent="none">Decline</button><button class="btn btn-gold" data-consent="all">Accept</button></div>
 </div>
 </body>
@@ -97,7 +98,7 @@ export function home(ctx) {
     <p class="label reveal">${esc(site.hero.eyebrow)}</p>
     <h1 id="hero-title" class="hero-title">${T.map((w, i) => `<span class="ln"><span style="--i:${i}">${esc(w)}</span></span>`).join(' ')}</h1>
     <p class="hero-sub reveal" style="--d:.9s">${esc(site.hero.subtitle)}</p>
-    <a class="btn btn-gold reveal" style="--d:1.05s" href="#developers">${esc(site.hero.button)} ${ARROW_R}</a>
+    <a class="btn btn-gold btn-explore reveal" style="--d:1.05s" href="#developers">${esc(site.hero.button)} ${ARROW_R}</a>
   </div>
   <div class="hero-bottom wrap" aria-hidden="true"><span>24.4539° N</span><span class="hb-line"></span><span>54.3773° E</span></div>
 </section>
@@ -132,7 +133,7 @@ export function home(ctx) {
   <article class="panel" id="dev-${d.slug}" style="--k:${i}" aria-labelledby="dev-${d.slug}-name">
     <div class="wrap panel-grid">
       <figure class="panel-photo">
-        ${photo(im, { sizes: '(min-width: 1000px) 46vw, 100vw', alt: im.subject })}
+        ${devLink(ctx, d, 'image', photo(im, { sizes: '(min-width: 1000px) 46vw, 100vw', alt: im.subject }))}
         <span class="frame" aria-hidden="true"></span>
         <span class="panel-n" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
       </figure>
@@ -155,7 +156,7 @@ export function home(ctx) {
 
 <section class="skyline" aria-label="Abu Dhabi">
   <div class="sky-img" data-parallax="0.15">${photo(night, { alt: night.subject })}</div>
-  <div class="wrap sky-inner"><p class="label">The capital</p><p class="sky-quote reveal">Islands, waterfronts and master-planned districts — <em>a skyline still being drawn.</em></p></div>
+  <div class="wrap sky-inner"><p class="label">The capital</p><p class="sky-quote reveal">Islands, waterfronts and master planned districts, <em>a skyline still being drawn.</em></p></div>
 </section>
 
 <section class="about-guide" aria-labelledby="ag-title">
@@ -183,7 +184,7 @@ export function profile(ctx, d) {
   <div class="p-hero-img" data-parallax="0.2">${photo(im, { eager: true, alt: im.subject })}</div>
   <div class="hero-vignette" aria-hidden="true"></div>
   <div class="wrap p-hero-inner">
-    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>—</span><a href="/#developers">Developers</a><span>—</span><span aria-current="page">${esc(d.name)}</span></nav>
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href="/#developers">Developers</a><span>/</span><span aria-current="page">${esc(d.name)}</span></nav>
     ${logoPlate(ctx, d, 'reveal')}
     <h1 class="p-title">${esc(d.name).split(' ').map((w, k) => `<span class="ln"><span style="--i:${k}">${w}</span></span>`).join(' ')}</h1>
     <p class="p-summary reveal" style="--d:.5s">${esc(d.summary)}</p>
@@ -237,7 +238,7 @@ ${d.projects?.length ? `<section class="p-projects" aria-labelledby="pj-title">
 <nav class="next" aria-label="Next developer"><a class="wrap" href="/developers/${next.slug}/"><span class="label">Next</span><span class="next-name">${esc(next.name)} ${ARROW_R}</span></a></nav>`;
   return layout(ctx, {
     path: `/developers/${d.slug}/`, type: 'profile', developer: d, ogType: 'profile', headerClass: 'is-over',
-    title: `${d.name} — Property Developer in Abu Dhabi | ${site.name}`,
+    title: `${d.name}, Property Developer in Abu Dhabi | ${site.name}`,
     description: (d.seoDescription || `${d.summary} Independent profile with background, Abu Dhabi communities and official website.`).slice(0, 300),
     image: im.file + '-1920.webp', jsonld: developerJsonLd(site, d),
   }, body);

@@ -42,31 +42,52 @@ const cio = new IntersectionObserver(es => es.forEach(e => {
 }), { threshold: .6 });
 d.querySelectorAll('[data-count]').forEach(el => cio.observe(el));
 
-// Parallax
+// Scroll-driven motion (parallax + stacking panels), smoothed with a single rAF loop that
+// only runs while something is still moving, so the page stays light when idle.
 const par = [...d.querySelectorAll('[data-parallax]')];
-if (!motionOff && par.length) (function loop() {
+const panels = [...d.querySelectorAll('.panel')];
+const desk = matchMedia('(min-width: 1000px)');
+const pstate = panels.map(() => ({ cur: 0 }));
+let ticking = false;
+
+// Tall panels stick by their bottom edge so nothing is hidden before the next one slides over.
+function fitPanels() {
+  panels.forEach(p => { p.style.top = desk.matches ? Math.min(0, innerHeight - p.offsetHeight) + 'px' : ''; });
+}
+
+function frame() {
+  ticking = false;
   const vh = innerHeight;
+  let moving = false;
   for (const el of par) {
     const r = el.parentElement.getBoundingClientRect();
-    if (r.bottom < 0 || r.top > vh) continue;
+    if (r.bottom < -50 || r.top > vh + 50) continue;
     const k = parseFloat(el.dataset.parallax) || .15;
     el.style.transform = `translate3d(0, ${(-r.top * k).toFixed(1)}px, 0)`;
   }
-  requestAnimationFrame(loop);
-})();
-
-// Stacking panels: earlier panels recede as the next slides over
-const panels = [...d.querySelectorAll('.panel')];
-if (panels.length && !motionOff && innerWidth >= 1000) (function loop() {
-  panels.forEach((p, i) => {
+  if (desk.matches) panels.forEach((p, i) => {
     const nx = panels[i + 1]; if (!nx) return;
-    const r = nx.getBoundingClientRect();
-    const t = Math.max(0, Math.min(1, 1 - r.top / innerHeight));
-    p.querySelector('.panel-grid').style.transform = `scale(${1 - t * .08}) translateY(${-t * 40}px)`;
-    p.querySelector('.panel-grid').style.opacity = 1 - t * .7;
+    const top = nx.getBoundingClientRect().top;
+    let target = Math.max(0, Math.min(1, 1 - top / vh));
+    target = target * target * (3 - 2 * target); // smoothstep easing
+    const st = pstate[i];
+    st.cur += (target - st.cur) * 0.2;
+    if (Math.abs(target - st.cur) < 0.001) st.cur = target; else moving = true;
+    const g = p.querySelector('.panel-grid');
+    g.style.transform = `translate3d(0, ${(-st.cur * 48).toFixed(2)}px, 0) scale(${(1 - st.cur * 0.06).toFixed(4)})`;
+    g.style.opacity = (1 - st.cur * 0.55).toFixed(3);
+    p.style.setProperty('--shade', (st.cur * 0.6).toFixed(3));
   });
-  requestAnimationFrame(loop);
-})();
+  if (moving) request();
+}
+function request() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
+if (!motionOff && (par.length || panels.length)) {
+  fitPanels();
+  addEventListener('scroll', request, { passive: true });
+  addEventListener('resize', () => { fitPanels(); request(); });
+  addEventListener('load', () => { fitPanels(); request(); });
+  request();
+}
 
 // Index hover preview (desktop)
 const prev = d.querySelector('.idx-preview');
