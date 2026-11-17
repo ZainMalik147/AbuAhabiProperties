@@ -134,19 +134,19 @@ export function home(ctx) {
     return `
   <article class="panel" id="dev-${d.slug}" style="--k:${i}" aria-labelledby="dev-${d.slug}-name">
     <div class="wrap panel-grid">
-      <figure class="panel-photo">
+      <figure class="panel-photo reveal-img">
         ${devLink(ctx, d, 'image', photo(im, { sizes: '(min-width: 1000px) 46vw, 100vw', alt: im.subject }))}
         <span class="frame" aria-hidden="true"></span>
         <span class="panel-n" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
       </figure>
       <div class="panel-body">
-        ${d.listingType === 'sponsored' ? '<p class="tag-sponsored">Sponsored</p>' : `<p class="label">Developer ${String(i + 1).padStart(2, '0')} / ${String(devs.length).padStart(2, '0')}</p>`}
-        ${logoPlate(ctx, d)}
-        <h3 id="dev-${d.slug}-name" class="panel-name">${esc(d.name)}</h3>
-        <p class="panel-summary">${esc(d.summary)}</p>
-        <ul class="tags" aria-label="Key areas of activity">${(d.areas || []).map(a => `<li>${esc(a)}</li>`).join('')}</ul>
-        ${d.projects?.length ? `<div class="panel-pj"><p class="label">Selected communities</p><ul>${d.projects.slice(0, 4).map(p => `<li><a href="${esc(outboundUrl(site, p.url || d.website))}" ${outAttrs(site, d, 'home', 'project')}><span>${esc(p.name)}</span><small>${esc(p.location || '')}</small>${ARROW}<span class="sr-only">(opens ${esc(d.name)}'s website in a new tab)</span></a></li>`).join('')}</ul></div>` : ''}
-        <div class="panel-cta">
+        ${d.listingType === 'sponsored' ? '<p class="tag-sponsored reveal">Sponsored</p>' : `<p class="label reveal">Developer ${String(i + 1).padStart(2, '0')} / ${String(devs.length).padStart(2, '0')}</p>`}
+        ${logoPlate(ctx, d, 'reveal')}
+        <h3 id="dev-${d.slug}-name" class="panel-name reveal" style="--d:.08s">${esc(d.name)}</h3>
+        <p class="panel-summary reveal" style="--d:.16s">${esc(d.summary)}</p>
+        <ul class="tags reveal" style="--d:.24s" aria-label="Key areas of activity">${(d.areas || []).map(a => `<li>${esc(a)}</li>`).join('')}</ul>
+        ${d.projects?.length ? `<div class="panel-pj reveal" style="--d:.3s"><p class="label">Selected communities</p><ul>${d.projects.slice(0, 4).map(p => `<li><a href="${esc(outboundUrl(site, p.url || d.website))}" ${outAttrs(site, d, 'home', 'project')}><span>${esc(p.name)}</span><small>${esc(p.location || '')}</small>${ARROW}<span class="sr-only">(opens ${esc(d.name)}'s website in a new tab)</span></a></li>`).join('')}</ul></div>` : ''}
+        <div class="panel-cta reveal" style="--d:.36s">
           <a class="btn btn-gold" href="/developers/${d.slug}/">Full profile ${ARROW_R}</a>
           <a class="btn btn-line" href="${esc(outboundUrl(site, d.website))}" ${outAttrs(site, d, 'home')}>Official website ${ARROW}<span class="sr-only">(opens in a new tab)</span></a>
         </div>

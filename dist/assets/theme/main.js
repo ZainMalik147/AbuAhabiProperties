@@ -42,52 +42,29 @@ const cio = new IntersectionObserver(es => es.forEach(e => {
 }), { threshold: .6 });
 d.querySelectorAll('[data-count]').forEach(el => cio.observe(el));
 
-// Scroll-driven motion (parallax + stacking panels), smoothed with a single rAF loop that
-// only runs while something is still moving, so the page stays light when idle.
+// Parallax, driven by scroll and run in a single rAF so the page stays light when idle.
 const par = [...d.querySelectorAll('[data-parallax]')];
-const panels = [...d.querySelectorAll('.panel')];
-const desk = matchMedia('(min-width: 1000px)');
-const pstate = panels.map(() => ({ cur: 0 }));
 let ticking = false;
-
-// Tall panels stick by their bottom edge so nothing is hidden before the next one slides over.
-function fitPanels() {
-  panels.forEach(p => { p.style.top = desk.matches ? Math.min(0, innerHeight - p.offsetHeight) + 'px' : ''; });
-}
-
 function frame() {
   ticking = false;
   const vh = innerHeight;
-  let moving = false;
   for (const el of par) {
     const r = el.parentElement.getBoundingClientRect();
     if (r.bottom < -50 || r.top > vh + 50) continue;
     const k = parseFloat(el.dataset.parallax) || .15;
     el.style.transform = `translate3d(0, ${(-r.top * k).toFixed(1)}px, 0)`;
   }
-  if (desk.matches) panels.forEach((p, i) => {
-    const nx = panels[i + 1]; if (!nx) return;
-    const top = nx.getBoundingClientRect().top;
-    let target = Math.max(0, Math.min(1, 1 - top / vh));
-    target = target * target * (3 - 2 * target); // smoothstep easing
-    const st = pstate[i];
-    st.cur += (target - st.cur) * 0.2;
-    if (Math.abs(target - st.cur) < 0.001) st.cur = target; else moving = true;
-    const g = p.querySelector('.panel-grid');
-    g.style.transform = `translate3d(0, ${(-st.cur * 48).toFixed(2)}px, 0) scale(${(1 - st.cur * 0.06).toFixed(4)})`;
-    g.style.opacity = (1 - st.cur * 0.55).toFixed(3);
-    p.style.setProperty('--shade', (st.cur * 0.6).toFixed(3));
-  });
-  if (moving) request();
 }
-function request() { if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
-if (!motionOff && (par.length || panels.length)) {
-  fitPanels();
+const request = () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
+if (!motionOff && par.length) {
   addEventListener('scroll', request, { passive: true });
-  addEventListener('resize', () => { fitPanels(); request(); });
-  addEventListener('load', () => { fitPanels(); request(); });
+  addEventListener('resize', request);
   request();
 }
+
+// Developer photos: reveal as they enter the viewport
+const rio = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); } }), { rootMargin: '0px 0px -12% 0px' });
+d.querySelectorAll('.reveal-img').forEach(el => motionOff ? el.classList.add('in') : rio.observe(el));
 
 // Index hover preview (desktop)
 const prev = d.querySelector('.idx-preview');
