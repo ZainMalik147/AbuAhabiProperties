@@ -87,4 +87,4 @@ User-agent: MistralAI-User
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://www.abudhabi-properties.com/sitemap.xml
+Sitemap: https://abudhabi.properties/sitemap.xml

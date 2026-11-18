@@ -3,7 +3,7 @@
 backend:
   name: git-gateway      # Netlify Identity + Git Gateway. For GitHub OAuth use: name: github, repo: OWNER/REPO
   branch: main
-site_url: https://www.abudhabi-properties.com
+site_url: https://abudhabi.properties
 media_folder: "assets/img"
 public_folder: "/assets/img"
 collections:

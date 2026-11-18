@@ -1,20 +1,20 @@
 {
   "name": "Abu Dhabi Properties",
-  "url": "https://www.abudhabi-properties.com",
+  "url": "https://abudhabi.properties",
   "lang": "en",
   "dir": "ltr",
   "city": "Abu Dhabi",
   "cityCountry": "United Arab Emirates",
   "description": "An independent guide to established real estate developers active in Abu Dhabi, covering their backgrounds, areas of activity and official websites.",
   "themeColor": "#0A0A0B",
-  "contactEmail": "editor@abudhabi-properties.com",
+  "contactEmail": "editor@abudhabi.properties",
   "operator": "Abu Dhabi Properties",
   "gtmId": "",
   "ga4Id": "",
   "verification": { "google": "", "bing": "", "ahrefs": "" },
   "indexNowKey": "e8c4b2a17f3d4c6e9b0a5d2f8e1c7a46",
   "maxAdvertisers": 8,
-  "outboundUtm": { "utm_source": "abudhabi-properties", "utm_medium": "referral", "utm_campaign": "developer-guide" },
+  "outboundUtm": { "utm_source": "abudhabi.properties", "utm_medium": "referral", "utm_campaign": "developer-guide" },
   "languages": [
     { "code": "en", "enabled": true, "dir": "ltr" },
     { "code": "ar", "enabled": false, "dir": "rtl" }
